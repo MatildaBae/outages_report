@@ -1,0 +1,58 @@
+---
+title: "SAIDI"
+authors: Jiwon Bae (jb5234) and Hillary Rodriguez (hnr2112)
+execute:
+  echo: true
+  warning: false
+  message: false
+format:
+  html:
+    fig-width: 6
+    fig-height: 4
+    out-width: 60%
+    embed-resources: true
+---
+
+## 
+
+```{r}
+df <-read.csv("/Users/RODRIGUEZHI/Downloads/PackageData.csv", stringsAsFactors = TRUE)
+source("SAIDI_code.R")
+```
+
+```{r}
+# SAIDI: System Average Interruption Duration Index
+
+library(dplyr)
+
+cust_served <- 3600382
+
+outages <- filter(df, OUTAGEFLAG == 1)
+
+SAIDI_calc(outages)
+
+```
+
+```{r}
+
+library(ggplot2)
+outages <- outages |> 
+  mutate(month = format(as.Date(outages[,"STARTDATE"], format="%Y-%m-%d"), "%m"))
+
+df_list <- split(outages, outages$month)
+SAIDI_calc_per_month <- lapply(df_list, function(x){
+  SAIDI_calc(x)
+})
+
+plot_saidi <- data.frame(
+  month = names(SAIDI_calc_per_month),
+  saidi = unlist(SAIDI_calc_per_month)
+)
+
+ggplot(plot_saidi, aes(x=month, y= saidi)) +
+  geom_point() +
+  labs(x = "Month", y = "SAIDI",
+       title = "SAIDI Calculation per Month")
+
+
+```

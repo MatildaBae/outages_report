@@ -1,0 +1,32 @@
+---
+title: "CAIDI"
+authors: Jiwon Bae (jb5234) and Hillary Rodriguez (hnr2112)
+execute:
+  echo: true
+  warning: false
+  message: false
+format:
+  html:
+    fig-width: 6
+    fig-height: 4
+    out-width: 60%
+    embed-resources: true
+---
+
+```{r}
+
+source("SAIDI_code.R")
+source("SAIFI_code.R")
+df <-read.csv("/Users/RODRIGUEZHI/Downloads/PackageData.csv", stringsAsFactors = TRUE)
+
+```
+
+```{r}
+
+# CAIDI: Customer Average Interruption Duration Index
+
+outages <- filter(df, OUTAGEFLAG == 1)
+
+SAIDI_calc(outages)/SAIFI_calc(outages)
+
+```

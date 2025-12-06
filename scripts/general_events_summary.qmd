@@ -1,0 +1,57 @@
+---
+title: "General Plots"
+authors: Jiwon Bae (jb5234) and Hillary Rodriguez (hnr2112)
+execute:
+  echo: true
+  warning: false
+  message: false
+format:
+  html:
+    fig-width: 6
+    fig-height: 4
+    out-width: 60%
+    embed-resources: true
+---
+
+```{r}
+df <-read.csv("/Users/RODRIGUEZHI/Downloads/PackageData.csv", stringsAsFactors = TRUE)
+
+outages <- filter(df, OUTAGEFLAG == 1)
+
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x=XBORO))+
+  geom_bar(fill="#FFD580", color="orange")+
+  labs(x="Borough", y="Count of Event", title ="Event Count from Oct 2024 to Oct 2025 by Borough")
+
+ggplot(outages, aes(x=XBORO))+
+  geom_bar(fill="cornflowerblue", color="blue")+
+  labs(x="Borough", y="Count of Outages", title ="Outage Count from Oct 2024 to Oct 2025 by Borough")
+
+
+## explaining your topics, explaining data points, multidimensional stuff (more complex view to look at diff interactions), plot by daily..
+```
+
+```{r}
+outages <- outages |> 
+  mutate(month = format(as.Date(outages[,"STARTDATE"], format="%Y-%m-%d"), "%m"))
+
+df_list <- split(outages, outages$month)
+
+cust_affect_per_month <- lapply(df_list, function(x){
+  sum(x$TOTALCUSTAFFECTED)
+})
+
+plot_cust_affect <- data.frame(
+  month = names(cust_affect_per_month),
+  custs = unlist(cust_affect_per_month)
+)
+
+ggplot(plot_cust_affect, aes(x=month, y= custs)) +
+  geom_point() +
+  labs(x = "Month", y = "Cust Affected",
+       title = "Customers Affected per Month")
+```
