@@ -10,9 +10,9 @@ execute:
 book:
   title: "YOUR PROJECT TITLE"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - Jiwon Bae (jb5234)
+    - Hillary Rodriguez (hnr2112)
+  repo-url: https://github.com/MatildaBae/outages_report.git
   date: today
   page-footer:
     right: |
