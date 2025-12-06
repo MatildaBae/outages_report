@@ -17,7 +17,7 @@ format:
 
 source("SAIDI_code.R")
 source("SAIFI_code.R")
-df <-read.csv("/Users/RODRIGUEZHI/Downloads/PackageData.csv", stringsAsFactors = TRUE)
+df <-read.csv("../data/PackageData.csv", stringsAsFactors = TRUE)
 
 ```
 
