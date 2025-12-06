@@ -16,9 +16,11 @@ format:
 ## 
 
 ```{r}
+data_path <- fs::path("..", "data", "PackageData.csv")
 
-df <-read.csv("../data/PackageData.csv", stringsAsFactors = TRUE)
-source("SAIDI_code.R")
+df <- readr::read_csv(data_path, show_col_types = FALSE)
+
+source(here::here("SAIDI_code.R"))
 ```
 
 ```{r}
