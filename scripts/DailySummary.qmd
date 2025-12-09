@@ -17,6 +17,8 @@ format:
 suppressPackageStartupMessages({
   library(tidyverse)
   library(lubridate)
+  library(dplyr)
+  library(ggplot2)
 })
 
 data_path <- fs::path("..", "data", "PackageData.csv")
@@ -24,7 +26,7 @@ data_path <- fs::path("..", "data", "PackageData.csv")
 outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
 ```
 
-Daily outage summary function
+# Daily outage summary function
 ```{r}
 summarize_daily_outages <- function(df) {
   df |>
@@ -57,91 +59,171 @@ daily_summary <- summarize_daily_outages(outages_raw)
 daily_summary |> head()
 ```
 
-Plotting helpers
+# Plotting helpers
 ```{r}
-plot_daily_outages <- function(daily_df) {
-  ggplot(daily_df, aes(x = outage_day, y = total_outages)) +
+filter_daily_range <- function(daily_df,
+                               start_date = NULL,
+                               end_date   = NULL) {
+
+  daily_df <- daily_df |>
+    mutate(outage_day = as.Date(outage_day))
+
+  if (!is.null(start_date) || !is.null(end_date)) {
+    if (is.null(start_date)) {
+      start_date <- min(daily_df$outage_day, na.rm = TRUE)
+    }
+    if (is.null(end_date)) {
+      end_date <- max(daily_df$outage_day, na.rm = TRUE)
+    }
+
+    daily_df <- daily_df |>
+      filter(outage_day >= start_date,
+             outage_day <= end_date)
+  }
+
+  daily_df
+}
+
+# Total outages per day
+plot_daily_outages <- function(daily_df,
+                               start_date = NULL,
+                               end_date   = NULL) {
+
+  df <- filter_daily_range(daily_df, start_date, end_date)
+  ymax <- max(df$total_outages, na.rm = TRUE)
+
+  ggplot(df, aes(x = outage_day, y = total_outages)) +
     geom_col() +
+    scale_y_continuous(limits = c(0, ymax * 1.1)) +
+    scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
       x = "Date",
       y = "Total outages",
-      title = "Total outages per day") +
-    scale_x_date(date_labels = "%Y-%m-%d") +
+      title = "Total outages per day"
+    ) +
     theme_minimal()
-  }
+}
 
-plot_daily_customers <- function(daily_df) {
-  ggplot(daily_df, aes(x = outage_day, y = total_customers)) +
+# Total customers affected
+plot_daily_customers <- function(daily_df,
+                                 start_date = NULL,
+                                 end_date   = NULL) {
+
+  df <- filter_daily_range(daily_df, start_date, end_date)
+  ymax <- max(df$total_customers, na.rm = TRUE)
+
+  ggplot(df, aes(x = outage_day, y = total_customers)) +
     geom_col() +
+    scale_y_continuous(limits = c(0, ymax * 1.1)) +
+    scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
       x = "Date",
       y = "Total customers affected",
-      title = "Total customers affected per day") +
+      title = "Total customers affected per day"
+    ) +
     theme_minimal()
-  }
+}
 
-plot_daily_total_duration <- function(daily_df) {
-  ggplot(daily_df, aes(x = outage_day, y = total_duration_mins)) +
+# Total outage duration
+plot_daily_total_duration <- function(daily_df,
+                                      start_date = NULL,
+                                      end_date   = NULL) {
+
+  df <- filter_daily_range(daily_df, start_date, end_date)
+  ymax <- max(df$total_duration_mins, na.rm = TRUE)
+
+  ggplot(df, aes(x = outage_day, y = total_duration_mins)) +
     geom_col() +
+    scale_y_continuous(limits = c(0, ymax * 1.1)) +
+    scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
       x = "Date",
       y = "Total outage minutes",
-      title = "Total duration of outages per day") +
+      title = "Total duration of outages per day"
+    ) +
     theme_minimal()
-  }
+}
 
-plot_daily_avg_restoration <- function(daily_df) {
-  ggplot(daily_df, aes(x = outage_day, y = avg_restoration_mins)) +
+# Average restoration time
+plot_daily_avg_restoration <- function(daily_df,
+                                       start_date = NULL,
+                                       end_date   = NULL) {
+
+  df <- filter_daily_range(daily_df, start_date, end_date)
+  ymax <- max(df$avg_restoration_mins, na.rm = TRUE)
+
+  ggplot(df, aes(x = outage_day, y = avg_restoration_mins)) +
     geom_line() +
     geom_point() +
+    scale_y_continuous(limits = c(0, ymax * 1.1)) +
+    scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
       x = "Date",
       y = "Average restoration time (minutes)",
-      title = "Average time to restoration per day") +
+      title = "Average time to restoration per day"
+    ) +
     theme_minimal()
-  }
+}
 
-plot_daily_pct_momentary <- function(daily_df) {
-  ggplot(daily_df, aes(x = outage_day, y = pct_momentary_events)) +
+# Percent momentary events
+plot_daily_pct_momentary <- function(daily_df,
+                                     start_date = NULL,
+                                     end_date   = NULL) {
+
+  df <- filter_daily_range(daily_df, start_date, end_date)
+  ymax <- max(df$pct_momentary_events, na.rm = TRUE)
+
+  ggplot(df, aes(x = outage_day, y = pct_momentary_events)) +
     geom_line() +
     geom_point() +
+    scale_y_continuous(limits = c(0, ymax * 1.1)) +
+    scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
       x = "Date",
       y = "% momentary events",
       title = "Percent of momentary events per day"
-      ) +
+    ) +
     theme_minimal()
-  }
+}
+
 ```
 
-Total outages per day
+# Total outages per day
 ```{r}
-plot_daily_outages(daily_summary)
+plot_daily_outages(daily_summary,
+                     start_date = as.Date("2024-11-01"),  
+                     end_date   = as.Date("2024-12-01"))
 
 ```
 
-Total customers affected per day
+# Total customers affected per day
 ```{r}
 plot_daily_customers(daily_summary,
-                     start_date = as.Date("2024-10-01"),  
-                     end_date   = as.Date("2024-12-31"))
+                     start_date = as.Date("2024-12-01"),  
+                     end_date   = as.Date("2025-01-01"))
 
 ```
 
-Total duration of outages per day
+# Total duration of outages per day
 ```{r}
-plot_daily_total_duration(daily_summary)
+plot_daily_total_duration(daily_summary,
+                     start_date = as.Date("2025-04-01"),  
+                     end_date   = as.Date("2025-05-01"))
 
 ```
 
-Average time to restoration
+# Average time to restoration
 ```{r}
-plot_daily_total_duration(daily_summary)
+plot_daily_avg_restoration(daily_summary,
+                     start_date = as.Date("2025-07-01"),  
+                     end_date   = as.Date("2025-08-01"))
 ```
 
-Percent of momentary events
+# Percent of momentary events
 ```{r}
-plot_daily_pct_momentary(daily_summary)
+plot_daily_pct_momentary(daily_summary,
+                     start_date = as.Date("2025-09-01"),  
+                     end_date   = as.Date("2025-10-01"))
 ```
 
 
