@@ -1,0 +1,39 @@
+---
+title: "trouble_code_classification"
+editor: visual
+---
+
+```{r}
+trouble_codes <-read.csv("../data/TroubleCodeLegend.csv", stringsAsFactors = TRUE)
+events <-read.csv("../data/PackageData.csv", stringsAsFactors = TRUE)
+
+```
+
+```{r}
+
+events_merged <- events %>%
+  left_join(trouble_codes, by = c("TROUBLECODE" = "SHORT_DESC"))
+
+single_trouble_code_events <- filter(events_merged, !is.na(CODE_NAME))
+single_trouble_code_events_outages <- filter(events_merged, OUTAGEFLAG == 1)
+single_trouble_code_events_nonoutages <- filter(events_merged, OUTAGEFLAG == 0)
+
+# https://ericsun153.github.io/Illuminating_US_Outage_Landscape/
+
+ggplot(single_trouble_code_events_outages, aes(x=CODE_NAME)) +
+    geom_bar() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title="Outage Count by Trouble Code",
+         x="Trouble Code",
+         y="Outage Count")
+
+```
+
+```{r}
+ggplot(single_trouble_code_events_nonoutages, aes(x=CODE_NAME)) +
+    geom_bar() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title="Non-Outage Count by Trouble Code",
+         x="Trouble Code",
+         y="Outage Count")
+```
