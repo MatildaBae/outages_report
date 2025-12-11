@@ -1,6 +1,5 @@
 # Results
 
-*Jiwon Plots*
 ```{r}
 suppressPackageStartupMessages({
   library(tidyverse)
@@ -20,7 +19,6 @@ outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
 daily_summary <- summarize_daily_outages(outages_raw)
 
 outages <- prepare_outages(outages_raw)
-weekly_summary  <- summarise_weekly_outages(outages)
 monthly_summary <- summarise_monthly_outages(outages)
 
 daily_ts <- prepare_daily_ts(outages_raw)
@@ -72,15 +70,13 @@ plot_daily_pct_momentary(daily_summary,
 ```
 
 ## Trend Analysis
-### Outages per week / month
+### Outages per month
 ```{r}
-plot_outages_per_week(weekly_summary)
 plot_outages_per_month(monthly_summary)
 ```
 
 ### Customer-hours lost
 ```{r}
-plot_customer_hours_weekly(weekly_summary)
 plot_customer_hours_monthly(monthly_summary)
 ```
 
