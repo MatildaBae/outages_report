@@ -186,7 +186,7 @@ CAIDI_calc(outages)
 ```{r}
 
 ggplot(outages, aes(x=XBORO))+
-  geom_bar(fill="cornflowerblue", color="blue")+
+  geom_bar()+
   labs(x="Borough", y="Count of Outages", title ="Outage Count from Oct 2024 to Oct 2025 by Borough")
 
 ```
