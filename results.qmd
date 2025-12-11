@@ -1,1 +1,298 @@
 # Results
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(lubridate)
+  library(ggplot2)
+  library(fs)
+  library(ggridges)
+  library(dplyr)
+  library(tsibble)
+  library(reshape2)
+  library(fable)
+  library(feasts)
+  library(urca)
+})
+
+source("scripts/DailySummary.R")
+source("scripts/WeeklyMonthlyTrend.R")
+source("scripts/TimeSeriesDecomp.R")
+source("scripts/EventChains.R")
+source("scripts/RemoveOutliers.R")
+source("scripts/SAIDI.R")
+source("scripts/SAIFI.R")
+source("scripts/CAIDI.R")
+
+
+data_path   <- fs::path("data", "PackageData.csv")
+trouble_codes_path <- fs::path("data", "TroubleCodeLegend.csv")
+
+outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
+trouble_codes <- readr::read_csv(trouble_codes_path, show_col_types = FALSE)
+
+daily_summary <- summarize_daily_outages(outages_raw)
+
+outages <- prepare_outages(outages_raw)
+
+outages <- outages |> 
+  mutate(month = month(outages$STARTDATE))
+
+monthly_summary <- summarise_monthly_outages(outages)
+
+daily_ts <- prepare_daily_ts(outages_raw)
+
+chains_df <- identify_event_chains(outages_raw,
+                                   min_gap = 5,
+                                   max_gap = 10)
+chain_summary <- summarise_event_chains(chains_df)
+
+```
+
+## Daily Outage Summary
+### Total outages per day
+```{r}
+plot_daily_outages(daily_summary,
+                     start_date = as.Date("2025-06-01"),  
+                     end_date   = as.Date("2025-07-01"))
+
+```
+
+### Total customers affected per day
+```{r}
+plot_daily_customers(daily_summary,
+                     start_date = as.Date("2024-12-01"),  
+                     end_date   = as.Date("2025-01-01"))
+
+```
+
+### Total duration of outages per day
+```{r}
+plot_daily_total_duration(daily_summary,
+                     start_date = as.Date("2025-04-01"),  
+                     end_date   = as.Date("2025-05-01"))
+
+```
+
+### Average time to restoration
+```{r}
+plot_daily_avg_restoration(daily_summary,
+                     start_date = as.Date("2025-07-01"),  
+                     end_date   = as.Date("2025-08-01"))
+```
+
+### Percent of momentary events
+```{r}
+plot_daily_pct_momentary(daily_summary,
+                     start_date = as.Date("2025-09-01"),  
+                     end_date   = as.Date("2025-10-01"))
+```
+
+## Trend Analysis
+### Outages per month
+```{r}
+plot_outages_per_month(monthly_summary)
+```
+
+### Customer-hours lost
+```{r}
+plot_customer_hours_monthly(monthly_summary)
+```
+
+### Troubleshooting code patterns
+```{r}
+plot_troublecode_top_monthly(outages, top_n_codes = 5)
+```
+
+### Seasonal outage frequency
+```{r}
+plot_seasonal_outage_frequency(outages)
+```
+
+### Yearly Trend
+```{r}
+plot_outage_trend_loess(daily_ts)
+```
+
+## Event Chains
+### Chain counts per borough
+```{r}
+plot_chain_counts_by_boro(chain_summary)
+```
+
+### Share of events in chains (%)
+```{r}
+plot_chain_percent_by_boro(chain_summary)
+```
+
+### Time-of-day pattern (When do chains happen?)
+```{r}
+plot_chain_time_of_day(chains_df)
+```
+
+## Utility Metrics
+### SAIDI Counts per Month
+#### System Average Interruption Duration Index
+```{r}
+
+outages <- outages |>
+  filter(XBORO != '-NDA-') |>
+  filter(OUTAGEFLAG == 1) |>
+  group_by(XBORO) |>
+  filter(remove_outliers(TOTALCUSTAFFECTED)) |>
+  ungroup()
+
+saidi_list <- split(outages, outages$month)
+
+SAIDI_calc_per_month <- lapply(saidi_list, function(x){
+  SAIDI_calc(x)
+})
+
+plot_saidi <- data.frame(
+  month = names(SAIDI_calc_per_month),
+  saidi = unlist(SAIDI_calc_per_month)
+)
+x_ordered <- factor(plot_saidi$month, 
+                    levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))
+
+ggplot(plot_saidi, aes(x=x_ordered, y= saidi)) +
+  geom_point() +
+  labs(x = "Month", y = "SAIDI",
+       title = "SAIDI Calculation per Month")
+
+SAIDI_calc(outages)
+```
+
+### SAIFI
+#### System Average Interruption Frequency Index
+```{r}
+
+SAIFI_calc(outages)
+
+```
+
+### CAIDI
+#### Customer Average Interruption Duration Index 
+
+```{r}
+
+CAIDI_calc(outages)
+
+```
+
+## Borough-Level Analysis
+
+### Outage Counts per Borough
+```{r}
+
+ggplot(outages, aes(x=XBORO))+
+  geom_bar(fill="cornflowerblue", color="blue")+
+  labs(x="Borough", y="Count of Outages", title ="Outage Count from Oct 2024 to Oct 2025 by Borough")
+
+```
+
+### Boxplot Breakdown per Borough
+
+```{r}
+outages_boro <- outages |>
+  mutate(
+    start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC"),
+    rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC"),
+    
+    # Use start time as the "event day" for aggregation
+    outage_day = as.Date(start_ts),
+    duration_mins = as.numeric(difftime(rest_ts, start_ts, units = "mins"))
+  )
+
+quartiles <- outages_boro |>
+  group_by(XBORO) |>
+  summarise(
+    Q1 = quantile(duration_mins, 0.25),
+    Median = median(duration_mins),
+    Q3 = quantile(duration_mins, 0.75),
+    .groups = "drop"
+  ) %>%
+  tidyr::pivot_longer(cols = c(Q1, Median, Q3),
+                      names_to = "stat",
+                      values_to = "y")
+
+ggplot(outages_boro, aes(x = XBORO, y = duration_mins)) +
+  geom_boxplot(outliers = FALSE) +
+  labs(title="Outage Duration by Borough",
+       x= "Borough",
+       y="Duration in Minutes") +
+  geom_text(
+    data = quartiles,
+    aes(x = XBORO, y = y, label = round(y, 2)),
+    vjust = -0.5,  # Adjust vertical position
+    color = "black",
+    size = 2
+  ) +
+  theme(
+    axis.text.x = element_text(size = 8)
+  )
+```
+
+### Ridgeline Plot of Outage Counts per Borough
+```{r}
+
+ggplot(outages, aes(x = TOTALCUSTAFFECTED, y = XBORO)) +
+geom_density_ridges(scale = 1.2, rel_min_height = 0.01, fill = "lightblue", alpha = 0.5) +
+theme_ridges() +
+theme(legend.position = "none") +
+labs(title = "Ridgeline Plots of Total Cust Affected by Borough",
+     x = "Total Customers Affected", 
+     y = "Borough")
+```
+
+## Trouble Code Analysis
+
+### Facet Bar Graphs for Top 5 Boroughs
+```{r}
+events_merged <- outages |>
+  left_join(trouble_codes, by = c("TROUBLECODE" = "SHORT_DESC"))
+
+top_counts <- events_merged |>
+  filter(XBORO != '-NDA-') |>
+  filter(CODE_NAME != 'NA') |>
+  group_by(XBORO) |>
+  count(CODE_NAME, name = "count") |>  
+  arrange(XBORO, desc(count), CODE_NAME) |>
+  slice_head(n = 5)
+
+
+ggplot(top_counts, aes(x=CODE_NAME, y=count)) +
+    geom_bar(stat="identity") +
+    facet_wrap(~XBORO) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title="Outage Count by Trouble Code",
+         subtitle = "References Top 5 Trouble Codes in each Borough",
+         x="Trouble Code",
+         y="Outage Count")
+
+```
+
+
+### Cleveland Dot Plot
+
+```{r}
+ggplot(top_counts, aes(x=count, y=CODE_NAME)) +
+    geom_point() +
+    facet_wrap(~XBORO) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title="Outage Count by Trouble Code",
+         subtitle = "References Top 5 Trouble Codes in each Borough",
+         x="Trouble Code",
+         y="Outage Count")
+```
+### Heat Map for Top 5 Trouble Codes per Borough
+```{r}
+ggplot(top_counts, aes(x = CODE_NAME, y = XBORO)) +
+    geom_tile(aes(fill = count)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+    labs(title = "Top Troublecode by Boroughs", 
+         x = "Trouble Code", 
+         y = "Borough")
+
+```

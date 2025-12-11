@@ -1,0 +1,91 @@
+CODE_NAME,SHORT_DESC
+Non-Outage,NO
+Outage,NL
+Side Off,SO
+Flickering Lights,FLT
+Low Voltage,LV
+High Voltage,HV
+Scheduled/Planned Work,SCH
+Scheduled Outage Update,SCU
+Cust Responsibility CSR verified (AMI),CRC
+Test Ticket,XXX
+Manhole,MH
+Service Box,SB
+Pole,P
+Transformer,TRF
+Vault,VLT
+Street Light,SLT
+Traffic Light,TLT
+Antenna,ANT
+Unselected,
+Wire Down,WDN
+Low Wire,LW
+Wire Burning,WBR
+MISC Wire Condition,MWC
+Open Neutral,OPN
+Hot Spot Condition,HSC
+Service Pole-House,SRV
+Pole-to-Pole,P2P
+Overhead,OH
+Underground,UG
+Aerial,AR
+Smoking,SMH
+Fire,MHF
+Explosion,MHX
+Main Burnout,BO
+Road Closed,RC
+Road Closed No Ingress/Egress,RCX
+Electric Street/Sdwlk Issue,SSW
+MH/Transformer Cover Issue,MTC
+Action Required (DOT Priority),ARE
+Pole Hit,PHT
+Pole Down,PDN
+OH Equipment Problem,OEQ
+Inspect SCADA Equipment,VRS
+Water Leak Priority 1,WL1
+Water Leak Priority 2,WL2
+Water Leak Priority 3,WL3
+Water Main Break,WMB
+EMI,EMI
+Fire Request,FRQ
+Energized Equip Shocks,ENE
+Electric Shock Reported,ESR
+Muni Call,Muni
+Elec Problem with Gas Leak,EGL
+Environment Health Safety,EHS
+Life Sustaining Equipment,LSE
+Life Sustaining Equipment Presumed,LSP
+High Priority,HP
+Low Priority,LP
+Critical Location,CL
+School Closure,SC
+FD/PD - On Site,FPO
+FD/PD - Not On Site,FPN
+Executive Complaint,EC
+Feeder Job,FDJ
+Trees on Wires,TOW
+Need Power 3-Phase,SOP
+Temporary Service,TPS
+Electric Turn-On,ETO
+Electric Turn-Off,ETF
+Feeder Patrol DA,FPT
+Targeted Feeder Patrol DA,TPT
+Bridged by Electrician,SOB
+Contractor Damage,CDM
+Damage by Company,DBC
+Safety Inspection,SIP
+Miscelaneous,MSC
+T.V. Interference,TVI
+DG limited or reduced production,DGP
+DG High and/or low voltage issues,DGV
+Cut Clear Crew,CCC
+Tree Task Force ,TTF
+Meter Problem,MTR
+Hot Socket,HOT
+Metropolitan Transit Authority (MTA),MTA
+AMI Last Gasp,AMI
+AMI Still Out,ASO
+AMI Still Out Predictive,ASP
+Customer Still Out,CSO
+Main Damage,DMG
+

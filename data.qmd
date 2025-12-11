@@ -1,5 +1,53 @@
 # Data
 
 ## Description
+We are using a dataset sourced from Con Edison's Outage Management System (OMS). For context, Con Edison is a utility based in New York City. It provides electricity, gas, and steam for NYC and Westchester County. The OMS team analyzes and reports power outage and non-outage events across all 5 boroughs and Westchester. The event-level columns we're using are:
+  Event ID - a unique identifier per record
+  Total Customers Affected - the number of customers out of power on the particular event
+  Start Date - the date and time that the event began
+  Restoration Date - the date and time that the power was restored for the particular event
+  Completed Date - the date and time that the event was completed. If the event is a non-outage, the restoration and the completed date will be the same.
+  Momentary Event Flag - displays 1 if the event is a momentary event, 0 if the event is not. Momentaries are events that are restored within 15 min of their start date.
+  Device Type - the type of device affected on the event. Devices are the structures that provide power to customers. One device can supply power to multiple residencies.
+  Device Outage Flag - displays 1 if the device is out, 0 if the device on the event is not.
+  Outage Flag - displays 1 if the event has customers out of power, 0 if there are no customers affected.
+  XBoro - the name of the Borough where the event is located
+  Udf Municipality - For NYC, this is the name of the borough where the event is located. For Westchester, this is the name of the specific muni where the event is located.
+  Trouble Code - the short code describing clues for the event. There is a legend mapping the trouble code short name to the long name e.g. NL = No lights, SO = Side Off.  
+
+We are using a year's worth of data from October 2024 to October 2025.
+```{r}
+suppressPackageStartupMessages({
+library(tidyverse)
+library(fs)
+})
+
+data_path    <- fs::path("data", "PackageData.csv")
+outages_raw  <- readr::read_csv(data_path, show_col_types = FALSE)
+
+source("scripts/MissingAnalysis.R")
+
+summary(outages_raw)
+```
+
+## Data Cleaning Principles
+We cleaned the Con Edison outage dataset by standardizing all date fields, correcting common formatting errors, and enforcing chronological consistency across STARTDATE, RESTDATE, and COMPDATE. Empty strings were converted to missing values prior to parsing, and mixed timestamp formats were resolved using flexible `parse_date_time()` rules. Because some outages incorrectly reported 2023 timestamps, restoration and completion dates labeled as 2023 were shifted forward by one year. Records missing critical fields such as COMPDATE or TOTALCUSTAFFECTED were removed. Categorical fields such as XBORO were normalized to uppercase to support grouping and visualization. The resulting dataset is tidy and chronologically valid.
 
 ## Missing value analysis
+In our preprocessing workflow, we first removed rows missing COMPDATE or TOTALCUSTAFFECTED. These two fields are essential: COMPDATE is required to compute outage duration, while TOTALCUSTAFFECTED determines the severity of an event.
+After filtering out these critical cases, our missing value analysis focuses only on UDF_MUNICIPALITY, TROUBLECODE, and unknown borough entries ("-NDA-") in XBORO.
+```{r}
+missing_tbl <- missing_nonzero(outages_raw, treat_ndas = TRUE)
+missing_tbl
+```
+
+```{r}
+plot_missing_bar(outages_raw, treat_ndas = TRUE, only_nonzero = TRUE)
+```
+
+```{r}
+# Upset plot for missingness pattern
+plot_missing_upset(outages_raw, treat_ndas = TRUE)
+```
+
+Most missingness is isolated to `TROUBLECODE`, but very few observations are missing multiple fields at once, indicating that missingness is sparse.
