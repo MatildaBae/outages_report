@@ -135,11 +135,16 @@ plot_chain_time_of_day(chains_df)
 #### System Average Interruption Duration Index
 ```{r}
 
+outages <- outages |>
+  filter(XBORO != '-NDA-') |>
+  filter(OUTAGEFLAG == 1) |>
+  group_by(XBORO) |>
+  filter(remove_outliers(TOTALCUSTAFFECTED)) |>
+  ungroup()
+
 saidi_list <- split(outages, outages$month)
 
-df_list <- split(outages, outages$month)
-
-SAIDI_calc_per_month <- lapply(df_list, function(x){
+SAIDI_calc_per_month <- lapply(saidi_list, function(x){
   SAIDI_calc(x)
 })
 
@@ -147,12 +152,15 @@ plot_saidi <- data.frame(
   month = names(SAIDI_calc_per_month),
   saidi = unlist(SAIDI_calc_per_month)
 )
+x_ordered <- factor(plot_saidi$month, 
+                    levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))
 
-ggplot(plot_saidi, aes(x=month, y= saidi)) +
+ggplot(plot_saidi, aes(x=x_ordered, y= saidi)) +
   geom_point() +
   labs(x = "Month", y = "SAIDI",
        title = "SAIDI Calculation per Month")
 
+SAIDI_calc(outages)
 ```
 
 ### SAIFI
@@ -187,7 +195,6 @@ ggplot(outages, aes(x=XBORO))+
 
 ```{r}
 outages_boro <- outages |>
-  filter(XBORO != '-NDA-') |>
   mutate(
     start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC"),
     rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC"),
@@ -198,7 +205,6 @@ outages_boro <- outages |>
   )
 
 quartiles <- outages_boro |>
-  filter(XBORO != '-NDA-') |>
   group_by(XBORO) |>
   summarise(
     Q1 = quantile(duration_mins, 0.25),
@@ -229,13 +235,8 @@ ggplot(outages_boro, aes(x = XBORO, y = duration_mins)) +
 
 ### Ridgeline Plot of Outage Counts per Borough
 ```{r}
-outages_clean <- outages |>
-  filter(XBORO != '-NDA-') |>
-  group_by(XBORO) |>
-  filter(remove_outliers(TOTALCUSTAFFECTED)) |>
-  ungroup()
 
-ggplot(outages_clean, aes(x = TOTALCUSTAFFECTED, y = XBORO)) +
+ggplot(outages, aes(x = TOTALCUSTAFFECTED, y = XBORO)) +
 geom_density_ridges(scale = 1.2, rel_min_height = 0.01, fill = "lightblue", alpha = 0.5) +
 theme_ridges() +
 theme(legend.position = "none") +
