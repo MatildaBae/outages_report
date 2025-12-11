@@ -4,6 +4,7 @@ editor: visual
 ---
 
 ```{r}
+library(ggplot2)
 trouble_codes <-read.csv("../data/TroubleCodeLegend.csv", stringsAsFactors = TRUE)
 events <-read.csv("../data/PackageData.csv", stringsAsFactors = TRUE)
 
@@ -11,8 +12,16 @@ events <-read.csv("../data/PackageData.csv", stringsAsFactors = TRUE)
 
 ```{r}
 
-events_merged <- events %>%
+events_merged <- events |>
   left_join(trouble_codes, by = c("TROUBLECODE" = "SHORT_DESC"))
+
+top_counts <- events_merged |>
+  filter(XBORO != '-NDA-') |>
+  group_by(XBORO) |>
+  count(TROUBLECODE, name = "count") |>  
+  arrange(XBORO, desc(count), TROUBLECODE) |>
+  slice_head(n = 5)
+
 
 single_trouble_code_events <- filter(events_merged, !is.na(CODE_NAME))
 single_trouble_code_events_outages <- filter(events_merged, OUTAGEFLAG == 1)
@@ -27,13 +36,37 @@ ggplot(single_trouble_code_events_outages, aes(x=CODE_NAME)) +
          x="Trouble Code",
          y="Outage Count")
 
+# git read me, data, conclusion, next steps (predictions/forecasting if we had more data for years we could do more time series analysis)
+
 ```
 
 ```{r}
-ggplot(single_trouble_code_events_nonoutages, aes(x=CODE_NAME)) +
+
+ggplot(top_counts, aes(x=TROUBLECODE)) +
     geom_bar() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    facet_wrap(~XBORO) +
     labs(title="Non-Outage Count by Trouble Code",
          x="Trouble Code",
          y="Outage Count")
+
+# facet
+# subtitle explanations
 ```
+
+```{r}
+library(reshape2)
+library(RColorBrewer)
+
+
+ggplot(top_counts, aes(x = TROUBLECODE, y = XBORO)) +
+  labs(title = "Top Troublecode by Boroughs", x = "Trouble Code", y = "Borough") +
+geom_tile(aes(fill = count)) +
+    scale_fill_continuous(high = "#132B43", low = "#56B1F7")
+
+```
+
+```{r}
+
+# clevland dot plot and facet
+```
+
