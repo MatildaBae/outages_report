@@ -13,3 +13,4 @@ SAIDI_calc <- function(outages) {
   sum(outages$outage_effect)/cust_served
 
 }
+

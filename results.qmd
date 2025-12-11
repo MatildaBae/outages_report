@@ -9,6 +9,10 @@ suppressPackageStartupMessages({
   library(ggridges)
   library(dplyr)
   library(tsibble)
+  library(reshape2)
+  library(fable)
+  library(feasts)
+  library(urca)
 })
 
 source("scripts/DailySummary.R")
@@ -22,11 +26,18 @@ source("scripts/CAIDI.R")
 
 
 data_path   <- fs::path("data", "PackageData.csv")
+trouble_codes_path <- fs::path("data", "TroubleCodeLegend.csv")
+
 outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
+trouble_codes <- readr::read_csv(trouble_codes_path, show_col_types = FALSE)
 
 daily_summary <- summarize_daily_outages(outages_raw)
 
 outages <- prepare_outages(outages_raw)
+
+outages <- outages |> 
+  mutate(month = month(outages$STARTDATE))
+
 monthly_summary <- summarise_monthly_outages(outages)
 
 daily_ts <- prepare_daily_ts(outages_raw)
@@ -121,9 +132,13 @@ plot_chain_time_of_day(chains_df)
 
 ## Utility Metrics
 ### SAIDI Counts per Month
+#### System Average Interruption Duration Index
 ```{r}
 
 saidi_list <- split(outages, outages$month)
+
+df_list <- split(outages, outages$month)
+
 SAIDI_calc_per_month <- lapply(df_list, function(x){
   SAIDI_calc(x)
 })
@@ -141,7 +156,7 @@ ggplot(plot_saidi, aes(x=month, y= saidi)) +
 ```
 
 ### SAIFI
-
+#### System Average Interruption Frequency Index
 ```{r}
 
 SAIFI_calc(outages)
@@ -149,6 +164,7 @@ SAIFI_calc(outages)
 ```
 
 ### CAIDI
+#### Customer Average Interruption Duration Index 
 
 ```{r}
 
@@ -161,27 +177,6 @@ CAIDI_calc(outages)
 ### Outage Counts per Borough
 ```{r}
 
-outages_boro <- outages |>
-  mutate(
-    start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC"),
-    rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC"),
-    
-    # Use start time as the "event day" for aggregation
-    outage_day = as.Date(start_ts),
-    duration_mins = as.numeric(difftime(rest_ts, start_ts, units = "mins"))
-  )
-
-quartiles <- outages_boro %>%
-  group_by(XBORO) %>%
-  summarise(
-    Q1 = quantile(duration_mins, 0.25),
-    Median = median(duration_mins),
-    Q3 = quantile(duration_mins, 0.75),
-    .groups = "drop"
-  ) %>%
-  tidyr::pivot_longer(cols = c(Q1, Median, Q3),
-                      names_to = "stat",
-                      values_to = "y")
 
 ggplot(outages, aes(x=XBORO))+
   geom_bar(fill="cornflowerblue", color="blue")+
@@ -192,7 +187,30 @@ ggplot(outages, aes(x=XBORO))+
 ### Boxplot Breakdown per Borough
 
 ```{r}
-ggplot(outages, aes(x = XBORO, y = duration_mins)) +
+outages_boro <- outages |>
+  mutate(
+    start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC"),
+    rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC"),
+    
+    # Use start time as the "event day" for aggregation
+    outage_day = as.Date(start_ts),
+    duration_mins = as.numeric(difftime(rest_ts, start_ts, units = "mins"))
+  )
+
+quartiles <- outages_boro |>
+  filter(XBORO != '-NDA-') |>
+  group_by(XBORO) |>
+  summarise(
+    Q1 = quantile(duration_mins, 0.25),
+    Median = median(duration_mins),
+    Q3 = quantile(duration_mins, 0.75),
+    .groups = "drop"
+  ) %>%
+  tidyr::pivot_longer(cols = c(Q1, Median, Q3),
+                      names_to = "stat",
+                      values_to = "y")
+
+ggplot(outages_boro, aes(x = XBORO, y = duration_mins)) +
   geom_boxplot(outliers = FALSE) +
   labs(title="Outage Duration by Borough",
        x= "Borough",
@@ -211,9 +229,10 @@ ggplot(outages, aes(x = XBORO, y = duration_mins)) +
 
 ### Ridgeline Plot of Outage Counts per Borough
 ```{r}
-outages_clean <- outages %>%
-  group_by(XBORO) %>%
-  filter(remove_outliers(TOTALCUSTAFFECTED)) %>%
+outages_clean <- outages |>
+  filter(XBORO != '-NDA-') |>
+  group_by(XBORO) |>
+  filter(remove_outliers(TOTALCUSTAFFECTED)) |>
   ungroup()
 
 ggplot(outages_clean, aes(x = TOTALCUSTAFFECTED, y = XBORO)) +
@@ -227,6 +246,52 @@ labs(title = "Ridgeline Plots of Total Cust Affected by Borough",
 
 ## Trouble Code Analysis
 
+### Facet Bar Graphs for Top 5 Boroughs
 ```{r}
+events_merged <- outages |>
+  left_join(trouble_codes, by = c("TROUBLECODE" = "SHORT_DESC"))
+
+top_counts <- events_merged |>
+  filter(XBORO != '-NDA-') |>
+  filter(CODE_NAME != 'NA') |>
+  group_by(XBORO) |>
+  count(CODE_NAME, name = "count") |>  
+  arrange(XBORO, desc(count), CODE_NAME) |>
+  slice_head(n = 5)
+
+
+ggplot(top_counts, aes(x=CODE_NAME, y=count)) +
+    geom_bar(stat="identity") +
+    facet_wrap(~XBORO) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title="Outage Count by Trouble Code",
+         subtitle = "References Top 5 Trouble Codes in each Borough",
+         x="Trouble Code",
+         y="Outage Count")
+
+```
+
+
+### Cleveland Dot Plot
+
+```{r}
+ggplot(top_counts, aes(x=count, y=CODE_NAME)) +
+    geom_point() +
+    facet_wrap(~XBORO) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title="Outage Count by Trouble Code",
+         subtitle = "References Top 5 Trouble Codes in each Borough",
+         x="Trouble Code",
+         y="Outage Count")
+```
+### Heat Map for Top 5 Trouble Codes per Borough
+```{r}
+ggplot(top_counts, aes(x = CODE_NAME, y = XBORO)) +
+    geom_tile(aes(fill = count)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+    labs(title = "Top Troublecode by Boroughs", 
+         x = "Trouble Code", 
+         y = "Borough")
 
 ```

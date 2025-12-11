@@ -1,5 +1,3 @@
-source("SAIDI_code.R")
-source("SAIFI_code.R")
 
 CAIDI_calc <- function(outages) {
 
