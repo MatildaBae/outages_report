@@ -8,7 +8,7 @@ execute:
   message: false
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "Electricity Outage Report"
   author:
     - Jiwon Bae (jb5234)
     - Hillary Rodriguez (hnr2112)
