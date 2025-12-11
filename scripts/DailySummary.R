@@ -1,19 +1,3 @@
----
-title: "Daily Outage Summary"
-authors: Jiwon Bae (jb5234) and Hillary Rodriguez (hnr2112)
-execute:
-  echo: true
-  warning: false
-  message: false
-format:
-  html:
-    fig-width: 6
-    fig-height: 4
-    out-width: 60%
-    embed-resources: true
----
-
-```{r}
 suppressPackageStartupMessages({
   library(tidyverse)
   library(lubridate)
@@ -21,47 +5,35 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-data_path <- fs::path("..", "data", "PackageData.csv")
-
-outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
-```
-
 # Daily outage summary function
-```{r}
 summarize_daily_outages <- function(df) {
   df |>
-  mutate(
-    start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC"),
-    rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC"),
-    
-    # Use start time as the "event day" for aggregation
-    outage_day = as.Date(start_ts),
-    duration_mins = as.numeric(difftime(rest_ts, start_ts, units = "mins"))
-  ) |>
-  # Remove clearly bad durations
-  filter(!is.na(outage_day),
-        !is.na(duration_mins),
-        duration_mins >= 0,
-        OUTAGEFLAG == 1) |>
-  group_by(outage_day) |>
-  summarise(
-    total_outages          = n(),
-    total_customers        = sum(TOTALCUSTAFFECTED %||% 0, na.rm = TRUE),
-    total_duration_mins    = sum(duration_mins, na.rm = TRUE),
-    avg_restoration_mins   = mean(duration_mins, na.rm = TRUE),
-    pct_momentary_events   = 100 * mean(MOMENTARYEVENTFLAG == 1, na.rm = TRUE),
-    .groups = "drop"
+    mutate(
+      start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC", quiet = TRUE),
+      rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC", quiet = TRUE),
+
+      # Use start time as the "event day" for aggregation
+      outage_day = as.Date(start_ts),
+      duration_mins = as.numeric(difftime(rest_ts, start_ts, units = "mins"))
+    ) |>
+    # Remove clearly bad durations
+    filter(!is.na(outage_day),
+           !is.na(duration_mins),
+           duration_mins >= 0,
+           OUTAGEFLAG == 1) |>
+    group_by(outage_day) |>
+    summarise(
+      total_outages          = n(),
+      total_customers        = sum(TOTALCUSTAFFECTED %||% 0, na.rm = TRUE),
+      total_duration_mins    = sum(duration_mins, na.rm = TRUE),
+      avg_restoration_mins   = mean(duration_mins, na.rm = TRUE),
+      pct_momentary_events   = 100 * mean(MOMENTARYEVENTFLAG == 1, na.rm = TRUE),
+      .groups = "drop"
     ) |>
     arrange(outage_day)
-  }
-
-daily_summary <- summarize_daily_outages(outages_raw)
-
-daily_summary |> head()
-```
+}
 
 # Plotting helpers
-```{r}
 filter_daily_range <- function(daily_df,
                                start_date = NULL,
                                end_date   = NULL) {
@@ -186,46 +158,3 @@ plot_daily_pct_momentary <- function(daily_df,
     ) +
     theme_minimal()
 }
-
-```
-
-# Total outages per day
-```{r}
-plot_daily_outages(daily_summary,
-                     start_date = as.Date("2025-06-20"),  
-                     end_date   = as.Date("2025-06-28"))
-
-```
-
-# Total customers affected per day
-```{r}
-plot_daily_customers(daily_summary,
-                     start_date = as.Date("2024-12-01"),  
-                     end_date   = as.Date("2025-01-01"))
-
-```
-
-# Total duration of outages per day
-```{r}
-plot_daily_total_duration(daily_summary,
-                     start_date = as.Date("2025-04-01"),  
-                     end_date   = as.Date("2025-05-01"))
-
-```
-
-# Average time to restoration
-```{r}
-plot_daily_avg_restoration(daily_summary,
-                     start_date = as.Date("2025-07-01"),  
-                     end_date   = as.Date("2025-08-01"))
-```
-
-# Percent of momentary events
-```{r}
-plot_daily_pct_momentary(daily_summary,
-                     start_date = as.Date("2025-09-01"),  
-                     end_date   = as.Date("2025-10-01"))
-```
-
-
-

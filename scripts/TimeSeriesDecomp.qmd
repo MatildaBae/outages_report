@@ -26,8 +26,6 @@ suppressPackageStartupMessages({
   library(urca)
 })
 
-has_prophet <- requireNamespace("prophet", quietly = TRUE)
-
 data_path <- fs::path("..", "data", "PackageData.csv")
 outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
 ```
@@ -44,7 +42,8 @@ prepare_daily_ts <- function(df) {
     filter(
       !is.na(outage_day),
       !is.na(duration_hours),
-      duration_hours >= 0) |>
+      duration_hours >= 0,
+      OUTAGEFLAG == 1) |>
     group_by(outage_day) |>
     summarise(
       total_outages   = n(),
@@ -65,30 +64,33 @@ daily_ts |> head()
 
 # Trend analysis
 ```{r}
-fit_outage_trend_stl <- function(daily_tsibble) {
+plot_outage_trend_loess <- function(daily_tsibble) {
   daily_tsibble |>
-    model(
-      stl = STL(
-        total_outages ~ trend(window = 21) +
-          season(period = "year")))
-  }
-
-plot_outage_trend <- function(daily_tsibble) {
-  fit <- fit_outage_trend_stl(daily_tsibble)
-  comps <- components(fit)
-  
-  autoplot(comps) +
-  labs(
-    title = "STL decomposition of daily outages",
-    subtitle = "Trend + seasonal pattern + remainder") +
-  scale_x_date(date_labels = "%Y-%m")
+    ggplot(aes(x = outage_day, y = total_outages)) +
+    geom_line(alpha = 0.4, color = "gray40", linewidth = 0.6) +
+    geom_smooth(
+      method    = "loess",
+      span      = 0.15,
+      se        = FALSE,
+      color     = "#0072B2",
+      linewidth = 1
+    ) +
+    labs(
+      title    = "Smoothed Trend of Daily Outages (LOESS)",
+      x        = "Outage day",
+      y        = "Number of outages"
+    ) +
+    theme_minimal(base_size = 13) +
+    scale_x_date(date_labels = "%Y-%m")
 }
 
-# Plot
-plot_outage_trend(daily_ts)
+# Use it on your object:
+plot_outage_trend_loess(daily_ts)
+
+
 ```
 
-# Seasonality analysis
+# Seasonality analysis -> Delete
 ```{r}
 plot_outage_seasonality <- function(daily_tsibble) {
   daily_tsibble |>
@@ -103,7 +105,7 @@ plot_outage_seasonality <- function(daily_tsibble) {
 plot_outage_seasonality(daily_ts)
 ```
 
-# Weekly series for forecasting
+# Weekly series for forecasting -> Delete
 ```{r}
 prepare_weekly_ts <- function(daily_tsibble) {
   daily_tsibble |>

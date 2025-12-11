@@ -1,1 +1,117 @@
 # Results
+
+*Jiwon Plots*
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(lubridate)
+  library(ggplot2)
+  library(fs)
+})
+
+source("scripts/DailySummary.R")
+source("scripts/WeeklyMonthlyTrend.R")
+source("scripts/TimeSeriesDecomp.R")
+source("scripts/EventChains.R")
+
+data_path   <- fs::path("data", "PackageData.csv")
+outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
+
+daily_summary <- summarize_daily_outages(outages_raw)
+
+outages <- prepare_outages(outages_raw)
+weekly_summary  <- summarise_weekly_outages(outages)
+monthly_summary <- summarise_monthly_outages(outages)
+
+daily_ts <- prepare_daily_ts(outages_raw)
+
+chains_df <- identify_event_chains(outages_raw,
+                                   min_gap = 5,
+                                   max_gap = 10)
+chain_summary <- summarise_event_chains(chains_df)
+
+```
+
+## Daily Outage Summary
+### Total outages per day
+```{r}
+plot_daily_outages(daily_summary,
+                     start_date = as.Date("2025-06-01"),  
+                     end_date   = as.Date("2025-07-01"))
+
+```
+
+### Total customers affected per day
+```{r}
+plot_daily_customers(daily_summary,
+                     start_date = as.Date("2024-12-01"),  
+                     end_date   = as.Date("2025-01-01"))
+
+```
+
+### Total duration of outages per day
+```{r}
+plot_daily_total_duration(daily_summary,
+                     start_date = as.Date("2025-04-01"),  
+                     end_date   = as.Date("2025-05-01"))
+
+```
+
+### Average time to restoration
+```{r}
+plot_daily_avg_restoration(daily_summary,
+                     start_date = as.Date("2025-07-01"),  
+                     end_date   = as.Date("2025-08-01"))
+```
+
+### Percent of momentary events
+```{r}
+plot_daily_pct_momentary(daily_summary,
+                     start_date = as.Date("2025-09-01"),  
+                     end_date   = as.Date("2025-10-01"))
+```
+
+## Trend Analysis
+### Outages per week / month
+```{r}
+plot_outages_per_week(weekly_summary)
+plot_outages_per_month(monthly_summary)
+```
+
+### Customer-hours lost
+```{r}
+plot_customer_hours_weekly(weekly_summary)
+plot_customer_hours_monthly(monthly_summary)
+```
+
+### Troubleshooting code patterns
+```{r}
+plot_troublecode_top_monthly(outages, top_n_codes = 5)
+```
+
+### Seasonal outage frequency
+```{r}
+plot_seasonal_outage_frequency(outages)
+```
+
+### Yearly Trend
+```{r}
+plot_outage_trend_loess(daily_ts)
+```
+
+## Event Chains
+### Chain counts per borough
+```{r}
+plot_chain_counts_by_boro(chain_summary)
+```
+
+### Share of events in chains (%)
+```{r}
+plot_chain_percent_by_boro(chain_summary)
+```
+
+### Time-of-day pattern (When do chains happen?)
+```{r}
+plot_chain_time_of_day(chains_df)
+```
+

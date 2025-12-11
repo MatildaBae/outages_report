@@ -35,7 +35,8 @@ identify_event_chains <- function(df,
     start_ts = ymd_hms(STARTDATE, tz = "UTC", quiet = TRUE)) |>
   filter(
     !is.na(start_ts),
-    !is.na(XBORO)) |>
+    !is.na(XBORO),
+    OUTAGEFLAG == 1) |>
   group_by(XBORO) |>
   arrange(start_ts, .by_group = TRUE) |>
   mutate(
@@ -79,6 +80,7 @@ chain_summary
 ```{r}
 plot_chain_counts_by_boro <- function(chain_summary_df) {
   chain_summary_df |>
+  filter(XBORO != "-NDA-") |> 
   ggplot(aes(x = reorder(XBORO, chain_events), y = chain_events)) +
   geom_col() +
   coord_flip() +
@@ -96,6 +98,7 @@ plot_chain_counts_by_boro(chain_summary)
 ```{r}
 plot_chain_percent_by_boro <- function(chain_summary_df) {
   chain_summary_df |>
+  filter(XBORO != "-NDA-") |>
   ggplot(aes(x = reorder(XBORO, pct_chain_events), y = pct_chain_events)) +
   geom_col() +
   coord_flip() +
@@ -113,6 +116,7 @@ plot_chain_percent_by_boro(chain_summary)
 ```{r}
 plot_chain_time_of_day <- function(chains_df) {
   chains_df |>
+  filter(XBORO != "-NDA-") |>
   mutate(
     start_ts = ymd_hms(STARTDATE, tz = "UTC", quiet = TRUE),
     hour = hour(start_ts)) |>

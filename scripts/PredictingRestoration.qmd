@@ -43,7 +43,8 @@ prepare_ert_data <- function(df) {
     is_momentary = MOMENTARYEVENTFLAG == 1) |>
   filter(
     !is.na(duration_mins),
-    duration_mins >= 0) |>
+    duration_mins >= 0,
+    OUTAGEFLAG == 1) |>
   transmute(
     duration_mins,
     log_duration = log1p(duration_mins),
@@ -71,34 +72,6 @@ set.seed(42)
 ert_split  <- initial_split(ert_df, prop = 0.8)
 ert_train  <- training(ert_split)
 ert_test   <- testing(ert_split)
-```
-
-# Baseline model: Linear reg
-```{r}
-fit_lm_ert <- function(train_df) {
-  lm(log_duration ~ . - duration_mins, data = train_df)
-}
-
-lm_fit <- fit_lm_ert(ert_train)
-
-summary(lm_fit)
-
-predict_ert <- function(fit, new_data, response = c("log", "minutes")) {
-  response <- match.arg(response)
-
-  log_pred <- predict(fit, newdata = new_data)
-
-  if (response == "log") {
-    tibble(.pred_log = log_pred)
-    } else {
-      tibble(.pred = pmax(0, expm1(log_pred)))
-    }
-  }
-
-lm_test_preds <- predict_ert(lm_fit, ert_test, response = "minutes") |>
-  bind_cols(ert_test |> select(duration_mins))
-
-lm_test_preds |> head()
 
 ert_metrics <- function(truth, estimate, threshold = 30) {
   tibble(
@@ -107,31 +80,9 @@ ert_metrics <- function(truth, estimate, threshold = 30) {
     mape  = mape_vec(truth, estimate),
     pct_within_thr = mean(abs(estimate - truth) <= threshold))
   }
-
-lm_perf <- ert_metrics(
-  truth    = lm_test_preds$duration_mins,
-  estimate = lm_test_preds$.pred,
-  threshold = 30)
-
-lm_perf
 ```
 
-# Residual plot (LM)
-```{r}
-lm_test_preds |>
-  mutate(
-    resid = duration_mins - .pred) |>
-  ggplot(aes(x = .pred, y = resid)) +
-  geom_point(alpha = 0.3) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(
-    title = "Residuals vs predicted restoration time (LM)",
-    x = "Predicted duration (minutes)",
-    y = "Residual (actual - predicted, minutes)") +
-theme_minimal()
-```
-
-# RF
+# RF -> Delete soo baddd
 ```{r}
 fit_rf_ert <- function(train_df) {
   ranger(
@@ -158,15 +109,6 @@ rf_perf <- ert_metrics(
 )
 
 rf_perf
-```
-
-# Compare models
-```{r}
-bind_rows(
-  lm   = lm_perf,
-  rf   = rf_perf,
-  .id = "model"
-)
 ```
 
 # Variable importance (RF)
