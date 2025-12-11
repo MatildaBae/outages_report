@@ -177,7 +177,6 @@ CAIDI_calc(outages)
 ### Outage Counts per Borough
 ```{r}
 
-
 ggplot(outages, aes(x=XBORO))+
   geom_bar(fill="cornflowerblue", color="blue")+
   labs(x="Borough", y="Count of Outages", title ="Outage Count from Oct 2024 to Oct 2025 by Borough")
@@ -188,6 +187,7 @@ ggplot(outages, aes(x=XBORO))+
 
 ```{r}
 outages_boro <- outages |>
+  filter(XBORO != '-NDA-') |>
   mutate(
     start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC"),
     rest_ts  = lubridate::ymd_hms(RESTDATE,  tz = "UTC"),
