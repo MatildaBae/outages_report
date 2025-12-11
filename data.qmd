@@ -2,4 +2,34 @@
 
 ## Description
 
+## Data Cleaning Principles
+We cleaned the Con Edison outage dataset by standardizing all date fields, correcting common formatting errors, and enforcing chronological consistency across STARTDATE, RESTDATE, and COMPDATE. Empty strings were converted to missing values prior to parsing, and mixed timestamp formats were resolved using flexible `parse_date_time()` rules. Because some outages incorrectly reported 2023 timestamps, restoration and completion dates labeled as 2023 were shifted forward by one year. Records missing critical fields such as COMPDATE or TOTALCUSTAFFECTED were removed. Categorical fields such as XBORO were normalized to uppercase to support grouping and visualization. The resulting dataset is tidy and chronologically valid.
+
 ## Missing value analysis
+In our preprocessing workflow, we first removed rows missing COMPDATE or TOTALCUSTAFFECTED. These two fields are essential: COMPDATE is required to compute outage duration, while TOTALCUSTAFFECTED determines the severity of an event.
+After filtering out these critical cases, our missing value analysis focuses only on UDF_MUNICIPALITY, TROUBLECODE, and unknown borough entries ("-NDA-") in XBORO.
+```{r}
+suppressPackageStartupMessages({
+library(tidyverse)
+library(fs)
+})
+
+data_path    <- fs::path("data", "PackageData.csv")
+outages_raw  <- readr::read_csv(data_path, show_col_types = FALSE)
+
+source("scripts/MissingAnalysis.R")
+
+missing_tbl <- missing_nonzero(outages_raw, treat_ndas = TRUE)
+missing_tbl
+```
+
+```{r}
+plot_missing_bar(outages_raw, treat_ndas = TRUE, only_nonzero = TRUE)
+```
+
+```{r}
+# Upset plot for missingness pattern
+plot_missing_upset(outages_raw, treat_ndas = TRUE)
+```
+
+Most missingness is isolated to `TROUBLECODE`, but very few observations are missing multiple fields at once, indicating that missingness is sparse.
