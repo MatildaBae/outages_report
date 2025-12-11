@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Conclusion – YOUR PROJECT TITLE</title>
+<title>5&nbsp; Next Steps – YOUR PROJECT TITLE</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./next_steps.html" rel="next">
-<link href="./results.html" rel="prev">
+<link href="./conclusion.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -81,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./conclusion.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Conclusion</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./next_steps.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Next Steps</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -129,13 +128,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./conclusion.html" class="sidebar-item-text sidebar-link active">
+  <a href="./conclusion.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./next_steps.html" class="sidebar-item-text sidebar-link">
+  <a href="./next_steps.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Next Steps</span></span></a>
   </div>
 </li>
@@ -152,7 +151,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Conclusion</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Next Steps</span></h1>
 </div>
 
 
@@ -169,13 +168,8 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This R package provides a set of functions that users can run with their own outage datasets, as long as their data follow the same column structure as the example dataset. By calling the functions in each script, users can automatically generate the same summaries, plots, and analyses shown in this report. The goal is to make outage analytics easy to reproduce and adaptable to any similar event-level electricity data.</p>
-<p>Across the daily and monthly views, the results show that most days have relatively low outage activity, but a few large spikes heavily influence the overall trends. These high-outage days also drive the monthly peaks, where certain months reach more than 2,000 outages and customer-hours lost exceed 1M. Winter and summer stand out as the busiest seasons, while spring and fall experience noticeably fewer outages.</p>
-<p>When looking at outage causes, the two major trouble codes — AMI (AMI last gasp) and SO (Side off) — account for most of the monthly variation. Both codes spike sharply in winter and again in midsummer, matching the broader seasonal patterns. The smoothed trend also highlights two main waves of outages: one in early winter and another during the summer months.</p>
-<p>Event-chain analysis shows where outages tend to cluster within 5-10 minutes. Brooklyn, Queens, and Westchester have the most chain events, both in count and percentage, suggesting these areas see more rapid follow-on outages. Chain events also appear most often during late morning and early afternoon. Overall, the graphs show that outages follow strong seasonal patterns, and vary by location and trouble code.</p>
-<p>We have 3 calculations for utility metrics: CAIDI, SAIFI, and SAIDI which are all measured in minutes. We removed outliers for customers affected then calculated the SAIDI (System Average Interruption Duration Index) for each month. We can see for September 2025 the SAIDI was particularly high, meaning that the average outage duration for each customer served was .8 minutes SAIDI is usually measured over the course of the year, but it can still be interesting to see how each month contributed to the yearly calculation. In addition to this calculation, we also provide CAIDI and SAIFI, which we provide as functions.</p>
-<p>We have a couple of visuals showing trends across our 6 boroughs, including Westchester County. We provided bar graphs, a box plot, and a ridgeline plot. Across the board, we can see that Brooklyn and Queens have a higher count of outages and that the medium duration of the outages is greater too. This may be due to factors like weather and/or equipment in these boroughs that may contribute to more outages and slower restoration times.</p>
-<p>We did analysis for our trouble codes which are the clues that help operators dispatch proper resources to restore outages. We created multiple faceted plots that show the outage count for the top 5 trouble codes for each boroughs. We can see that Scheduled/Planned Work is a common trouble code across all boroughs. We also created a heat map to make trouble-code outage counts more visually appealing to the user. With the color palette that we used, we hope that users can easily determine which trouble codes are most common among the boroughs.</p>
+<p>As seen in the results, we did time series analysis on the outage data. We used a year’s worth of data when creating our functions and graphs, which was useful in creating visuals that show us trends throughout 2025. However, a year’s worth of data is not enough to create a model that could help us predict outage trends in coming years because the model may be shortsighted. If we could attain multiple years of outage data we could create a model that utilities can use for forecasting. Though outage data is subject to change year-to-year due to yearly differences in weather, the model can still give us insight into general outage trends throughout the year. This way utilities can gather their resources in preparation for time periods with large outages.</p>
+<p>In addition to forecasting, we can also use this package to make a more interactive experience. R offers a package called Shiny that can be used to create interactive web applications, making our functionality more accessible to users that want learn more about their outage data. Users would be able to access the app directly and upload their outage data, and we can configure the app to show visuals and metrics of their choosing. Here are some additional ideas that could be helpful for our target audience: - Incorporate user-inputted fields (e.g.&nbsp;target KPI) so that users could compare their graphs/metrics against their target. - Add interactive filters such as check boxes, radio buttons, and drop downs to narrow the data in the report based on user need (e.g.&nbsp;viewing just Manhattan data instead of all 6 boroughs)</p>
 
 
 
@@ -599,14 +593,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./results.html" class="pagination-link" aria-label="Results">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Results</span></span>
+      <a href="./conclusion.html" class="pagination-link" aria-label="Conclusion">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Conclusion</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./next_steps.html" class="pagination-link" aria-label="Next Steps">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Next Steps</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -617,7 +608,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><ul><li><a href="https://github.com/MatildaBae/outages_report.git/edit/main/conclusion.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MatildaBae/outages_report.git/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions"><ul><li><a href="https://github.com/MatildaBae/outages_report.git/edit/main/next_steps.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/MatildaBae/outages_report.git/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>
