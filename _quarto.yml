@@ -23,6 +23,7 @@ book:
     - data.qmd
     - results.qmd
     - conclusion.qmd
+    - next_steps.qmd
 
 format:
   html:

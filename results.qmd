@@ -131,8 +131,8 @@ plot_chain_time_of_day(chains_df)
 ```
 
 ## Utility Metrics
-### SAIDI Counts per Month
-#### System Average Interruption Duration Index
+### System Average Interruption Duration Index (SAIDI)
+#### SAIDI Counts per Month
 ```{r}
 
 outages <- outages |>
@@ -163,16 +163,13 @@ ggplot(plot_saidi, aes(x=x_ordered, y= saidi)) +
 SAIDI_calc(outages)
 ```
 
-### SAIFI
-#### System Average Interruption Frequency Index
+### System Average Interruption Frequency Index (SAIFI)
 ```{r}
-
 SAIFI_calc(outages)
 
 ```
 
-### CAIDI
-#### Customer Average Interruption Duration Index 
+### Customer Average Interruption Duration Index (CAIDI)
 
 ```{r}
 
