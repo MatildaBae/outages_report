@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "YOUR PROJECT TITLE",
     "section": "",
-    "text": "1 Introduction",
+    "text": "1 Introduction\nElectricity outage datasets are rich, high-frequency records that capture when outages occur, how long they last, how many customers are affected, and what underlying conditions or trouble codes contributed to the event. These data accumulate rapidly and contain valuable insights about system performance, resilience, and community impact. Our R package provides a streamlined framework for analyzing and visualizing electricity outage events, with tools designed specifically for event-level infrastructure data. Inspired by the design philosophy of the hurricaneexposure package, we extend these ideas to support high-resolution outage data that require daily and seasonal aggregation, restoration-time analytics, and borough-level comparisons. The package integrates clear statistical summaries, reliability metrics (such as SAIDI, SAIFI, and CAIDI), and time-series methods to uncover trends. It aims to make outage analytics more interpretable, reproducible, and accessible for utilities, policymakers, and researchers seeking data-driven insight into grid resilience and performance.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
     ]
@@ -34,7 +34,7 @@
     "href": "results.html",
     "title": "3  Results",
     "section": "",
-    "text": "3.1 Daily Outage Summary\nJiwon Plots",
+    "text": "3.1 Daily Outage Summary",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Results</span>"
     ]
@@ -54,7 +54,7 @@
     "href": "results.html#trend-analysis",
     "title": "3  Results",
     "section": "3.2 Trend Analysis",
-    "text": "3.2 Trend Analysis\n\n3.2.1 Outages per week / month\n\n\nCode\nplot_outages_per_week(weekly_summary)\n\n\n\n\n\n\n\n\n\nCode\nplot_outages_per_month(monthly_summary)\n\n\n\n\n\n\n\n\n\n\n\n3.2.2 Customer-hours lost\n\n\nCode\nplot_customer_hours_weekly(weekly_summary)\n\n\n\n\n\n\n\n\n\nCode\nplot_customer_hours_monthly(monthly_summary)\n\n\n\n\n\n\n\n\n\n\n\n3.2.3 Troubleshooting code patterns\n\n\nCode\nplot_troublecode_top_monthly(outages, top_n_codes = 5)\n\n\n\n\n\n\n\n\n\n\n\n3.2.4 Seasonal outage frequency\n\n\nCode\nplot_seasonal_outage_frequency(outages)\n\n\n\n\n\n\n\n\n\n\n\n3.2.5 Yearly Trend\n\n\nCode\nplot_outage_trend_loess(daily_ts)",
+    "text": "3.2 Trend Analysis\n\n3.2.1 Outages per month\n\n\nCode\nplot_outages_per_month(monthly_summary)\n\n\n\n\n\n\n\n\n\n\n\n3.2.2 Customer-hours lost\n\n\nCode\nplot_customer_hours_monthly(monthly_summary)\n\n\n\n\n\n\n\n\n\n\n\n3.2.3 Troubleshooting code patterns\n\n\nCode\nplot_troublecode_top_monthly(outages, top_n_codes = 5)\n\n\n\n\n\n\n\n\n\n\n\n3.2.4 Seasonal outage frequency\n\n\nCode\nplot_seasonal_outage_frequency(outages)\n\n\n\n\n\n\n\n\n\n\n\n3.2.5 Yearly Trend\n\n\nCode\nplot_outage_trend_loess(daily_ts)",
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Results</span>"
     ]
@@ -77,6 +77,16 @@
     "text": "2.2 Data Cleaning Principles\nWe cleaned the Con Edison outage dataset by standardizing all date fields, correcting common formatting errors, and enforcing chronological consistency across STARTDATE, RESTDATE, and COMPDATE. Empty strings were converted to missing values prior to parsing, and mixed timestamp formats were resolved using flexible parse_date_time() rules. Because some outages incorrectly reported 2023 timestamps, restoration and completion dates labeled as 2023 were shifted forward by one year. Records missing critical fields such as COMPDATE or TOTALCUSTAFFECTED were removed. Categorical fields such as XBORO were normalized to uppercase to support grouping and visualization. The resulting dataset is tidy and chronologically valid.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
+    ]
+  },
+  {
+    "objectID": "conclusion.html",
+    "href": "conclusion.html",
+    "title": "4  Conclusion",
+    "section": "",
+    "text": "This R package provides a set of functions that users can run with their own outage datasets, as long as their data follow the same column structure as the example dataset. By calling the functions in each script, users can automatically generate the same summaries, plots, and analyses shown in this report. The goal is to make outage analytics easy to reproduce and adaptable to any similar event-level electricity data.\nAcross the daily and monthly views, the results show that most days have relatively low outage activity, but a few large spikes heavily influence the overall trends. These high-outage days also drive the monthly peaks, where certain months reach more than 2,000 outages and customer-hours lost exceed 1M. Winter and summer stand out as the busiest seasons, while spring and fall experience noticeably fewer outages.\nWhen looking at outage causes, the two major trouble codes — AMI (AMI last gasp) and SO (Side off) — account for most of the monthly variation. Both codes spike sharply in winter and again in midsummer, matching the broader seasonal patterns. The smoothed trend also highlights two main waves of outages: one in early winter and another during the summer months.\nEvent-chain analysis shows where outages tend to cluster within 5-10 minutes. Brooklyn, Queens, and Westchester have the most chain events, both in count and percentage, suggesting these areas see more rapid follow-on outages. Chain events also appear most often during late morning and early afternoon. Overall, the graphs show that outages follow strong seasonal patterns, and vary by location and trouble code.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Conclusion</span>"
     ]
   }
 ]

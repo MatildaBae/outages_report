@@ -85,7 +85,9 @@ plot_outages_per_week <- function(weekly_df,
   ymax <- max(df$total_outages, na.rm = TRUE)
 
   ggplot(df, aes(x = outage_week, y = total_outages)) +
-    geom_col(width = 7) +
+    geom_col(fill = "lightblue") +
+    geom_line(aes(group = 1), linewidth = 0.7) +
+    geom_point(size = 1.8) +
     scale_y_continuous(limits = c(0, ymax * 1.1)) +
     scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
@@ -103,7 +105,9 @@ plot_outages_per_month <- function(monthly_df,
   ymax <- max(df$total_outages, na.rm = TRUE)
 
   ggplot(df, aes(x = outage_month, y = total_outages)) +
-    geom_col(width = 25) +
+    geom_col(fill = "lightblue") +
+    geom_line(aes(group = 1), linewidth = 0.7) +
+    geom_point(size = 1.8) +
     scale_y_continuous(limits = c(0, ymax * 1.1)) +
     scale_x_date(date_labels = "%Y-%m") +
     labs(
@@ -121,7 +125,9 @@ plot_customer_hours_weekly <- function(weekly_df,
   ymax <- max(df$customer_hours_lost, na.rm = TRUE)
 
   ggplot(df, aes(x = outage_week, y = customer_hours_lost)) +
-    geom_col(width = 7) +
+    geom_col(fill = "aquamarine3") +
+    geom_line(aes(group = 1), linewidth = 0.7) +
+    geom_point(size = 1.8) +
     scale_y_continuous(limits = c(0, ymax * 1.1)) +
     scale_x_date(date_labels = "%Y-%m-%d") +
     labs(
@@ -139,7 +145,9 @@ plot_customer_hours_monthly <- function(monthly_df,
   ymax <- max(df$customer_hours_lost, na.rm = TRUE)
 
   ggplot(df, aes(x = outage_month, y = customer_hours_lost)) +
-    geom_col(width = 25) +
+    geom_col(fill = "aquamarine3") +
+    geom_line(aes(group = 1), linewidth = 0.7) +
+    geom_point(size = 1.8) +
     scale_y_continuous(limits = c(0, ymax * 1.1)) +
     scale_x_date(date_labels = "%Y-%m") +
     labs(

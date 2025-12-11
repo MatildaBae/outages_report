@@ -1,4 +1,5 @@
 # Conclusion
+
 This R package provides a set of functions that users can run with their own outage datasets, as long as their data follow the same column structure as the example dataset. By calling the functions in each script, users can automatically generate the same summaries, plots, and analyses shown in this report. The goal is to make outage analytics easy to reproduce and adaptable to any similar event-level electricity data.
 
 Across the daily and monthly views, the results show that most days have relatively low outage activity, but a few large spikes heavily influence the overall trends. These high-outage days also drive the monthly peaks, where certain months reach more than 2,000 outages and customer-hours lost exceed 1M. Winter and summer stand out as the busiest seasons, while spring and fall experience noticeably fewer outages.
@@ -14,3 +15,4 @@ As seen in the results, we did time series analysis on the outage data. We used 
 In addition to forecasting, we can also use this package to make a more interactive experience. R offers a package called Shiny that can be used to create interactive web applications, making our functionality more accessible to users that want learn more about their outage data. Users would be able to access the app directly and upload their outage data, and we can configure the app to show visuals and metrics of their choosing. Here are some additional ideas that could be helpful for our target audience:
 - Incorporate user-inputted fields (e.g. target KPI) so that users could compare their graphs/metrics against their target. 
 - Add interactive filters such as check boxes, radio buttons, and drop downs to narrow the data in the report based on user need (e.g. viewing just Manhattan data instead of all 6 boroughs)
+
