@@ -71,6 +71,44 @@ plot_chain_percent_by_boro <- function(chain_summary_df) {
 
 # Time-of-day pattern (When do chains happen?)
 plot_chain_time_of_day <- function(chains_df) {
+  # Labels for the clock
+  hour_labels <- c(
+    "12 am", "1 am", "2 am", "3 am", "4 am", "5 am",
+    "6 am", "7 am", "8 am", "9 am", "10 am", "11 am",
+    "12 pm", "1 pm", "2 pm", "3 pm", "4 pm", "5 pm",
+    "6 pm", "7 pm", "8 pm", "9 pm", "10 pm", "11 pm"
+  )
+
+  chains_df |>
+    filter(XBORO != "-NDA-") |>
+    mutate(
+      start_ts = lubridate::ymd_hms(STARTDATE, tz = "UTC", quiet = TRUE),
+      hour     = lubridate::hour(start_ts)
+    ) |>
+    filter(is_chain) |>
+    count(hour) |>
+    ggplot(aes(x = hour, y = n)) +
+    geom_col(width = 1, fill = "grey30") +
+    coord_polar() +  # start at top (12 o'clock)
+    scale_x_continuous(
+      breaks = 0:23,
+      labels = hour_labels,
+      limits = c(0, 24)             # close the circle
+    ) +
+    labs(
+      title = "Time-of-day distribution of chain outages",
+      x = NULL,
+      y = NULL
+    ) +
+    theme_minimal(base_size = 12) +
+    theme(
+      panel.grid.minor = element_blank(),
+      axis.text.y      = element_blank()
+    )
+}
+
+
+plot_chain_time_of_day2 <- function(chains_df) {
   chains_df |>
     filter(XBORO != "-NDA-") |>
     mutate(
