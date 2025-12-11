@@ -2,7 +2,7 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "YOUR PROJECT TITLE",
+    "title": "Electricity Outage Report",
     "section": "",
     "text": "1 Introduction\nElectricity outage datasets are rich, high-frequency records that capture when outages occur, how long they last, how many customers are affected, and what underlying conditions or trouble codes contributed to the event. These data accumulate rapidly and contain valuable insights about system performance, resilience, and community impact. Our R package provides a streamlined framework for analyzing and visualizing electricity outage events, with tools designed specifically for event-level infrastructure data. Inspired by the design philosophy of the hurricaneexposure package, we extend these ideas to support high-resolution outage data that require daily and seasonal aggregation, restoration-time analytics, and borough-level comparisons. The package integrates clear statistical summaries, reliability metrics (such as SAIDI, SAIFI, and CAIDI), and time-series methods to uncover trends. It aims to make outage analytics more interpretable, reproducible, and accessible for utilities, policymakers, and researchers seeking data-driven insight into grid resilience and performance.",
     "crumbs": [
