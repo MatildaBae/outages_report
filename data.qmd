@@ -42,6 +42,10 @@ missing_tbl
 ```
 
 ```{r}
+plot_missing_bar(outages_raw, treat_ndas = TRUE, only_nonzero = TRUE)
+```
+
+```{r}
 # Upset plot for missingness pattern
 plot_missing_upset(outages_raw, treat_ndas = TRUE)
 ```
