@@ -20,11 +20,21 @@
     ]
   },
   {
+    "objectID": "data.html#data-cleaning-principles",
+    "href": "data.html#data-cleaning-principles",
+    "title": "2  Data",
+    "section": "2.2 Data Cleaning Principles",
+    "text": "2.2 Data Cleaning Principles\nWe cleaned the Con Edison outage dataset by standardizing all date fields, correcting common formatting errors, and enforcing chronological consistency across STARTDATE, RESTDATE, and COMPDATE. Empty strings were converted to missing values prior to parsing, and mixed timestamp formats were resolved using flexible parse_date_time() rules. Because some outages incorrectly reported 2023 timestamps, restoration and completion dates labeled as 2023 were shifted forward by one year. Records missing critical fields such as COMPDATE or TOTALCUSTAFFECTED were removed. Categorical fields such as XBORO were normalized to uppercase to support grouping and visualization. The resulting dataset is tidy and chronologically valid.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
+    ]
+  },
+  {
     "objectID": "data.html#missing-value-analysis",
     "href": "data.html#missing-value-analysis",
     "title": "2  Data",
     "section": "2.3 Missing value analysis",
-    "text": "2.3 Missing value analysis\nIn our preprocessing workflow, we first removed rows missing COMPDATE or TOTALCUSTAFFECTED. These two fields are essential: COMPDATE is required to compute outage duration, while TOTALCUSTAFFECTED determines the severity of an event. After filtering out these critical cases, our missing value analysis focuses only on UDF_MUNICIPALITY, TROUBLECODE, and unknown borough entries (“-NDA-”) in XBORO.\n\n\nCode\nmissing_tbl &lt;- missing_nonzero(outages_raw, treat_ndas = TRUE)\nmissing_tbl\n\n\n# A tibble: 3 × 3\n  variable         na_count na_percent\n  &lt;chr&gt;               &lt;int&gt;      &lt;dbl&gt;\n1 TROUBLECODE           336     0.231 \n2 XBORO                  43     0.0296\n3 UDF_MUNICIPALITY       28     0.0193\n\n\n\n\nCode\n# Upset plot for missingness pattern\nplot_missing_upset(outages_raw, treat_ndas = TRUE)\n\n\n\n\n\n\n\n\n\nMost missingness is isolated to TROUBLECODE, but very few observations are missing multiple fields at once, indicating that missingness is sparse.",
+    "text": "2.3 Missing value analysis\nIn our preprocessing workflow, we first removed rows missing COMPDATE or TOTALCUSTAFFECTED. These two fields are essential: COMPDATE is required to compute outage duration, while TOTALCUSTAFFECTED determines the severity of an event. After filtering out these critical cases, our missing value analysis focuses only on UDF_MUNICIPALITY, TROUBLECODE, and unknown borough entries (“-NDA-”) in XBORO.\n\n\nCode\nmissing_tbl &lt;- missing_nonzero(outages_raw, treat_ndas = TRUE)\nmissing_tbl\n\n\n# A tibble: 3 × 3\n  variable         na_count na_percent\n  &lt;chr&gt;               &lt;int&gt;      &lt;dbl&gt;\n1 TROUBLECODE           336     0.231 \n2 XBORO                  43     0.0296\n3 UDF_MUNICIPALITY       28     0.0193\n\n\n\n\nCode\nplot_missing_bar(outages_raw, treat_ndas = TRUE, only_nonzero = TRUE)\n\n\n\n\n\n\n\n\n\n\n\nCode\n# Upset plot for missingness pattern\nplot_missing_upset(outages_raw, treat_ndas = TRUE)\n\n\n\n\n\n\n\n\n\nMost missingness is isolated to TROUBLECODE, but very few observations are missing multiple fields at once, indicating that missingness is sparse.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
     ]
@@ -70,26 +80,6 @@
     ]
   },
   {
-    "objectID": "data.html#data-cleaning-principles",
-    "href": "data.html#data-cleaning-principles",
-    "title": "2  Data",
-    "section": "2.2 Data Cleaning Principles",
-    "text": "2.2 Data Cleaning Principles\nWe cleaned the Con Edison outage dataset by standardizing all date fields, correcting common formatting errors, and enforcing chronological consistency across STARTDATE, RESTDATE, and COMPDATE. Empty strings were converted to missing values prior to parsing, and mixed timestamp formats were resolved using flexible parse_date_time() rules. Because some outages incorrectly reported 2023 timestamps, restoration and completion dates labeled as 2023 were shifted forward by one year. Records missing critical fields such as COMPDATE or TOTALCUSTAFFECTED were removed. Categorical fields such as XBORO were normalized to uppercase to support grouping and visualization. The resulting dataset is tidy and chronologically valid.",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data</span>"
-    ]
-  },
-  {
-    "objectID": "conclusion.html",
-    "href": "conclusion.html",
-    "title": "4  Conclusion",
-    "section": "",
-    "text": "Takeaways: During the course of this project, we learned about the seasonal trends for outage data on both a monthly and yearly basis. We also learned about the outage distributions across the 6 boroughs. We learned which boroughs are more susceptible to outages and we even speculated as to why this may be the case. We figured that borough weather and infrastructure may either cause or prevent outages.\nLimitations & Lessons Learned: The structure of our dataset limits the kinds of plots that we can create. We had a lot of categorical data (e.g. trouble codes, borough, device) but little numerical data so we were limited in what findings could be useful to utility members that would use our package. If we had the opportunity to redo this project, we would look for more opportunities to include numerical points in our data set.\nNext Steps: For this project, we used a year’s worth of data when creating our functions and graphs, which was useful in creating visuals that show us trends throughout 2025. However, a year’s worth of data is not enough to create a model that could help us predict outage trends in coming years because the model may be shortsighted. If we could attain multiple years of outage data we could create a model that utilities can use for forecasting. The model can still give us insight into general outage trends throughout the year. This way utilities can gather their resources in preparation for time periods with large outages. In addition, we would complete our development for creating a public R package that is accessible to users.",
-    "crumbs": [
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Conclusion</span>"
-    ]
-  },
-  {
     "objectID": "results.html#utility-metrics",
     "href": "results.html#utility-metrics",
     "title": "3  Results",
@@ -120,13 +110,13 @@
     ]
   },
   {
-    "objectID": "next_steps.html",
-    "href": "next_steps.html",
-    "title": "5  Next Steps",
+    "objectID": "conclusion.html",
+    "href": "conclusion.html",
+    "title": "4  Conclusion",
     "section": "",
-    "text": "As seen in the results, we did time series analysis on the outage data. We used a year’s worth of data when creating our functions and graphs, which was useful in creating visuals that show us trends throughout 2025. However, a year’s worth of data is not enough to create a model that could help us predict outage trends in coming years because the model may be shortsighted. If we could attain multiple years of outage data we could create a model that utilities can use for forecasting. Though outage data is subject to change year-to-year due to yearly differences in weather, the model can still give us insight into general outage trends throughout the year. This way utilities can gather their resources in preparation for time periods with large outages.\nIn addition to forecasting, we can also use this package to make a more interactive experience. R offers a package called Shiny that can be used to create interactive web applications, making our functionality more accessible to users that want learn more about their outage data. Users would be able to access the app directly and upload their outage data, and we can configure the app to show visuals and metrics of their choosing. Here are some additional ideas that could be helpful for our target audience: - Incorporate user-inputted fields (e.g. target KPI) so that users could compare their graphs/metrics against their target. - Add interactive filters such as check boxes, radio buttons, and drop downs to narrow the data in the report based on user need (e.g. viewing just Manhattan data instead of all 6 boroughs)",
+    "text": "Takeaways: During the course of this project, we learned about the seasonal trends for outage data on both a monthly and yearly basis. We also learned about the outage distributions across the 6 boroughs. We learned which boroughs are more susceptible to outages and we even speculated as to why this may be the case. We figured that borough weather and infrastructure may either cause or prevent outages.\nLimitations & Lessons Learned: The structure of our dataset limits the kinds of plots that we can create. We had a lot of categorical data (e.g. trouble codes, borough, device) but little numerical data so we were limited in what findings could be useful to utility members that would use our package. If we had the opportunity to redo this project, we would look for more opportunities to include numerical points in our data set.\nNext Steps: For this project, we used a year’s worth of data when creating our functions and graphs, which was useful in creating visuals that show us trends throughout 2025. However, a year’s worth of data is not enough to create a model that could help us predict outage trends in coming years because the model may be shortsighted. If we could attain multiple years of outage data we could create a model that utilities can use for forecasting. The model can still give us insight into general outage trends throughout the year. This way utilities can gather their resources in preparation for time periods with large outages. In addition, we would complete our development for creating a public R package that is accessible to users.",
     "crumbs": [
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Next Steps</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Conclusion</span>"
     ]
   }
 ]
