@@ -19,13 +19,6 @@ in our data file.
 Our package was designed to be used by utilities to get a better understanding of
 their data in a quick, easy, and convenient way.
 
-# outagesreport
-
-An R package for analyzing and visualizing electricity outage data.  
-`outagesreport` provides utilities for computing standard reliability metrics
-(SAIDI, SAIFI, CAIDI) and generating daily, weekly, monthly, and seasonal
-outage summaries and plots.
-
 ---
 
 ## Installation
