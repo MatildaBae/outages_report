@@ -7,11 +7,12 @@
 ^README\.html$
 ^_quarto\.yml$
 ^.*\.qmd$
-^\.*\\.Rproj$$
-^\\.Rproj\\.user$
+^.*\.Rproj$
+^\.Rproj\.user$
 ^DiagnosticPlots\\.png$
 ^conclusion\\.qmd$
 ^data\\.qmd$
 ^index\\.qmd$
 ^results\\.qmd$
 ^\\.Rproj\\.user$$
+^\.github$
