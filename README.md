@@ -3,8 +3,7 @@
 # Electricity Outage Reporting 
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/MatildaBae/outages_report/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MatildaBae/outages_report/actions/workflows/R-CMD-check.yaml)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![R-CMD-check](https://github.com/MatildaBae/outages_report/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/MatildaBae/outages_report/actions/workflows/R-CMD-check.yml)
 <!-- badges: end -->
 
 We are creating a package that takes in outage data and generates a report consisting 
