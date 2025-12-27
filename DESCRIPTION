@@ -1,0 +1,38 @@
+Package: outagesreport
+Title: Electricity Outage Reporting and Utility Reliability Metrics
+Version: 0.0.0.9000
+Authors@R: 
+    c(
+      person("Jiwon", "Bae", email = "jb5234@columbia.edu", role = c("aut", "cre")),
+      person("Hillary", "Rodriguez", email = "hnr2112@columbia.edu", role = "aut")
+    )
+Description: 
+    Provides tools for analyzing and reporting electricity outage data. 
+    The package computes common utility reliability metrics, including 
+    SAIDI (System Average Interruption Duration Index), SAIFI (System Average 
+    Interruption Frequency Index), and CAIDI (Customer Average Interruption 
+    Duration Index). It also generates visualizations of outage trends at 
+    daily, weekly, monthly, and yearly resolutions, as well as spatial 
+    summaries such as borough-level outage patterns. The package assumes 
+    outage data are provided as a CSV file following a predefined format and 
+    is designed to support utilities in quickly and conveniently exploring 
+    outage performance and reliability.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    dplyr,
+    ggplot2,
+    lubridate,
+    naniar,
+    rlang,
+    tidyr,
+    tsibble
+Suggests: 
+    knitr,
+    readr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3

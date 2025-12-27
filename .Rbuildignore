@@ -1,0 +1,17 @@
+^outagereport\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^\.quarto$
+^docs$
+^README_files$
+^README\.html$
+^_quarto\.yml$
+^.*\.qmd$
+^\.*\\.Rproj$$
+^\\.Rproj\\.user$
+^DiagnosticPlots\\.png$
+^conclusion\\.qmd$
+^data\\.qmd$
+^index\\.qmd$
+^results\\.qmd$
+^\\.Rproj\\.user$$
