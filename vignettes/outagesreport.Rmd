@@ -16,4 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(outagesreport)
+library(pkgdown)
+usethis::use_pkgdown_github_pages()
+pkgdown::build_site()
 ```
