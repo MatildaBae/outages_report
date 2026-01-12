@@ -1,0 +1,5 @@
+# outagesreport
+
+``` r
+library(outagesreport)
+```
