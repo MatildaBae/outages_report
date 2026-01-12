@@ -16,3 +16,5 @@
 ^results\\.qmd$
 ^\\.Rproj\\.user$$
 ^\.github$
+^_pkgdown\.yml$
+^pkgdown$

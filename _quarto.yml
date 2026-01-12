@@ -29,6 +29,3 @@ format:
     theme: lumen
     code-fold: true
 
-template:
-  bootstrap: 5
-
