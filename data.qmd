@@ -22,10 +22,10 @@ library(tidyverse)
 library(fs)
 })
 
-data_path    <- fs::path("data", "PackageData.csv")
+data_path    <- fs::path("inst/extdata", "PackageData.csv")
 outages_raw  <- readr::read_csv(data_path, show_col_types = FALSE)
 
-source("scripts/MissingAnalysis.R")
+source("R/MissingAnalysis.R")
 
 summary(outages_raw)
 ```

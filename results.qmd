@@ -15,18 +15,18 @@ suppressPackageStartupMessages({
   library(urca)
 })
 
-source("scripts/DailySummary.R")
-source("scripts/WeeklyMonthlyTrend.R")
-source("scripts/TimeSeriesDecomp.R")
-source("scripts/EventChains.R")
-source("scripts/RemoveOutliers.R")
-source("scripts/SAIDI.R")
-source("scripts/SAIFI.R")
-source("scripts/CAIDI.R")
+source("R/DailySummary.R")
+source("R/WeeklyMonthlyTrend.R")
+source("R/TimeSeriesDecomp.R")
+source("R/EventChains.R")
+source("R/RemoveOutliers.R")
+source("R/SAIDI.R")
+source("R/SAIFI.R")
+source("R/CAIDI.R")
 
 
-data_path   <- fs::path("data", "PackageData.csv")
-trouble_codes_path <- fs::path("data", "TroubleCodeLegend.csv")
+data_path    <- fs::path("inst/extdata", "PackageData.csv")
+trouble_codes_path <- fs::path("inst/extdata", "TroubleCodeLegend.csv")
 
 outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
 trouble_codes <- readr::read_csv(trouble_codes_path, show_col_types = FALSE)
