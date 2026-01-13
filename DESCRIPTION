@@ -28,7 +28,15 @@ Imports:
     naniar,
     rlang,
     tidyr,
-    tsibble
+    tsibble,
+    tidyverse,
+    ggridges,
+    fs,
+    tsibble,
+    reshape2,
+    fable,
+    feasts,
+    urca
 Suggests: 
     knitr,
     readr,
