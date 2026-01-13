@@ -1,0 +1,12 @@
+pandoc: '3.4'
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  conclusion: conclusion.html
+  data: data.html
+  introduction: introduction.html
+  results: results.html
+last_built: 2026-01-13T02:27Z
+urls:
+  reference: https://matildabae.github.io/outages_report/reference
+  article: https://matildabae.github.io/outages_report/articles

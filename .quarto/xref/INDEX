@@ -1,0 +1,29 @@
+{
+  "results.qmd": {
+    "results.html": "afafd8f9"
+  },
+  "index.qmd": {
+    "index.html": "3f766128"
+  },
+  "data.qmd": {
+    "data.html": "732240d7"
+  },
+  "conclusion.qmd": {
+    "conclusion.html": "96389be2"
+  },
+  "next steps.qmd": {
+    "next steps.html": "16ca79b5"
+  },
+  "next_steps.qmd": {
+    "next_steps.html": "108e1426"
+  },
+  "documents/data.qmd": {
+    "data.html": "62c238b3"
+  },
+  "documents/results.qmd": {
+    "results.html": "f7791748"
+  },
+  "documents/conclusion.qmd": {
+    "conclusion.html": "e9702307"
+  }
+}

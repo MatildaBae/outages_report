@@ -1,0 +1,28 @@
+# Conclusion
+
+Takeaways: During the course of this project, we learned about the
+seasonal trends for outage data on both a monthly and yearly basis. We
+also learned about the outage distributions across the 6 boroughs. We
+learned which boroughs are more susceptible to outages and we even
+speculated as to why this may be the case. We figured that borough
+weather and infrastructure may either cause or prevent outages.
+
+Limitations & Lessons Learned: The structure of our dataset limits the
+kinds of plots that we can create. We had a lot of categorical data
+(e.g. trouble codes, borough, device) but little numerical data so we
+were limited in what findings could be useful to utility members that
+would use our package. If we had the opportunity to redo this project,
+we would look for more opportunities to include numerical points in our
+data set.
+
+Next Steps: For this project, we used a year’s worth of data when
+creating our functions and graphs, which was useful in creating visuals
+that show us trends throughout 2025. However, a year’s worth of data is
+not enough to create a model that could help us predict outage trends in
+coming years because the model may be shortsighted. If we could attain
+multiple years of outage data we could create a model that utilities can
+use for forecasting. The model can still give us insight into general
+outage trends throughout the year. This way utilities can gather their
+resources in preparation for time periods with large outages. In
+addition, we would complete our development for creating a public R
+package that is accessible to users.
