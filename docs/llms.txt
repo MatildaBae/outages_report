@@ -1,6 +1,8 @@
-# Electricity Outage Reporting
+# OutagesReport Package
 
-2025-12-11 Jiwon Bae and Hillary Rodriguez
+2026-1-12 Jiwon Bae and Hillary Rodriguez
+
+Please follow below instructions to get started on using our package!
 
 ## Overview
 
@@ -265,6 +267,9 @@ plot_daily_outages(daily)
 
 # Articles
 
-### All vignettes
+### Interpreting Con Edison Outage Data
 
-- [outagesreport](https://matildabae.github.io/outages_report/articles/outagesreport.md):
+- [Introduction](https://matildabae.github.io/outages_report/articles/introduction.md):
+- [Data](https://matildabae.github.io/outages_report/articles/data.md):
+- [Results](https://matildabae.github.io/outages_report/articles/results.md):
+- [Conclusion](https://matildabae.github.io/outages_report/articles/conclusion.md):

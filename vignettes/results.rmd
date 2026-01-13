@@ -1,4 +1,11 @@
-# Results
+---
+title: "Results"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r}
 suppressPackageStartupMessages({
@@ -15,18 +22,18 @@ suppressPackageStartupMessages({
   library(urca)
 })
 
-source("R/DailySummary.R")
-source("R/WeeklyMonthlyTrend.R")
-source("R/TimeSeriesDecomp.R")
-source("R/EventChains.R")
-source("R/RemoveOutliers.R")
-source("R/SAIDI.R")
-source("R/SAIFI.R")
-source("R/CAIDI.R")
+source(fs::path("..","R", "DailySummary.R"))
+source(fs::path("..","R", "WeeklyMonthlyTrend.R"))
+source(fs::path("..","R", "TimeSeriesDecomp.R"))
+source(fs::path("..","R", "EventChains.R"))
+source(fs::path("..","R", "RemoveOutliers.R"))
+source(fs::path("..","R", "SAIDI.R"))
+source(fs::path("..","R", "SAIFI.R"))
+source(fs::path("..","R", "CAIDI.R"))
 
 
-data_path    <- fs::path("inst/extdata", "PackageData.csv")
-trouble_codes_path <- fs::path("inst/extdata", "TroubleCodeLegend.csv")
+data_path    <- fs::path("..","inst/extdata", "PackageData.csv")
+trouble_codes_path <- fs::path("..","inst/extdata", "TroubleCodeLegend.csv")
 
 outages_raw <- readr::read_csv(data_path, show_col_types = FALSE)
 trouble_codes <- readr::read_csv(trouble_codes_path, show_col_types = FALSE)
@@ -301,4 +308,5 @@ ggplot(top_counts, aes(x = CODE_NAME, y = XBORO)) +
          y = "Borough")
 
 ```
+
 We did analysis for our trouble codes which are the clues that help operators dispatch proper resources to restore outages. We created multiple faceted plots that show the outage count for the top 5 trouble codes for each boroughs. We can see that Scheduled/Planned Work is a common trouble code across all boroughs. We also created a heat map to make trouble-code outage counts more visually appealing to the user. With the color palette that we used, we hope that users can easily determine which trouble codes are most common among the boroughs.

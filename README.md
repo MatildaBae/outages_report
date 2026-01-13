@@ -1,6 +1,8 @@
-2025-12-11 Jiwon Bae and Hillary Rodriguez
+2026-1-12 Jiwon Bae and Hillary Rodriguez
 
-# Electricity Outage Reporting 
+# OutagesReport Package
+
+Please follow below instructions to get started on using our package!
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/MatildaBae/outages_report/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MatildaBae/outages_report/actions/workflows/R-CMD-check.yaml)

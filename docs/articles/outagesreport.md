@@ -1,5 +1,0 @@
-# outagesreport
-
-``` r
-library(outagesreport)
-```

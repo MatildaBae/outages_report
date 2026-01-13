@@ -1,6 +1,8 @@
-# Electricity Outage Reporting
+# OutagesReport Package
 
-2025-12-11 Jiwon Bae and Hillary Rodriguez
+2026-1-12 Jiwon Bae and Hillary Rodriguez
+
+Please follow below instructions to get started on using our package!
 
 ## Overview
 

@@ -1,4 +1,11 @@
-# Conclusion
+---
+title: "Conclusion"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{conclusion}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 Takeaways: During the course of this project, we learned about the seasonal trends for outage data on both a monthly and yearly basis.  We also learned about the outage distributions across the 6 boroughs. We learned which boroughs are more susceptible to outages and we even speculated as to why this may be the case. We figured that borough weather and infrastructure may either cause or prevent outages.
 
